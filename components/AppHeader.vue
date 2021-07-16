@@ -14,7 +14,7 @@
         nuxt
         to="/"
       >
-        <v-icon large>mdi-school</v-icon>
+        <v-icon large>mdi-access-point</v-icon>
       </v-btn>
 
     </v-toolbar-title>
@@ -40,42 +40,62 @@
 
     <v-spacer></v-spacer>
 
-
-    <v-row
-      dense
-      justify="end"
+    <template
+      v-if="!$route.path.startsWith('/user')"
     >
-      <v-col
-        cols="auto"
+      <v-row
+        justify="end"
+        dense
       >
-        <v-btn
-          v-if="$route.path !== '/login'"
-          nuxt
-          text
-          to="/login"
+        <v-col
+          cols="auto"
         >
-          Login
-        </v-btn>
-      </v-col>
+          <v-btn
+            text
+            nuxt
+            to="/login"
+            v-if="$route.path !== '/login'"
+          >
+            Login
+          </v-btn>
+        </v-col>
 
-      <v-col
-        cols="auto"
+        <v-col
+          cols="auto"
+        >
+          <v-btn
+            outlined
+            nuxt
+            to="/signup"
+            v-if="$route.path !== '/signup'"
+          >
+            Signup
+          </v-btn>
+        </v-col>
+      </v-row>
+    </template>
+
+    <template
+      v-else
+    >
+      <v-btn
+        outlined
+        @click="logout"
       >
-        <v-btn
-          v-if="$route.path !== '/signup'"
-          nuxt
-          outlined
-          to="/signup"
+        Logout
+        <v-icon
+          right
         >
-          Signup
-        </v-btn>
-      </v-col>
+          mdi-logout-variant
+        </v-icon>
+      </v-btn>
+    </template>
 
-    </v-row>
   </v-app-bar>
 </template>
 
 <script>
+import { mapFields } from 'vuex-map-fields'
 
 export default {
   name: 'AppHeader',
@@ -87,5 +107,21 @@ export default {
       },
     ],
   }),
+  computed: {
+    ...mapFields([
+      'fullName',
+      'username',
+      'authorization'
+    ])
+  },
+  methods:{
+    logout(){
+      this.fullName = ''
+      this.username = ''
+      this.authorization = ''
+
+      this.$router.push(`/`)
+    }
+  }
 }
 </script>

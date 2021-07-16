@@ -1,21 +1,21 @@
 <template>
-  <div>
-
-    <v-parallax
-      dark
-      height="700"
-      src="/banner.jpg"
-    >
-      <v-row
-        align="center"
-        justify="center"
-      >
-        <v-col class="text-center" cols="12">
-          <h1 class="display-1 font-weight-thin mb-4">Remote Conferencing System</h1>
-          <h4 class="subheading">Welcome to our site</h4>
-        </v-col>
-      </v-row>
-    </v-parallax>
-
-  </div>
+  <v-app>
+    <app-header></app-header>
+    <v-main>
+      <nuxt-child/>
+    </v-main>
+    <app-footer></app-footer>
+  </v-app>
 </template>
+
+<script>
+import AppHeader from '../components/AppHeader'
+import AppFooter from '../components/AppFooter'
+
+export default {
+  components: {
+    AppFooter,
+    AppHeader
+  }
+}
+</script>

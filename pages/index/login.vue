@@ -8,7 +8,7 @@
       <v-card-title
         class="mb-6"
       >
-        <span class="headline">Signup</span>
+        <span class="headline">Login</span>
       </v-card-title>
 
       <v-card-text>
@@ -17,26 +17,18 @@
         >
           <card-form-error
             v-if="error"
-            message="The input email has already been used."
+            message="Incorrect email or password."
           ></card-form-error>
 
           <v-text-field
-            v-model="userSignup.fullName"
-            :counter="50"
-            :rules="fullNameRules"
-            label="Full name"
-            outlined
-          ></v-text-field>
-
-          <v-text-field
-            v-model="userSignup.username"
+            v-model="userLogin.username"
             :rules="usernameRules"
             label="Username"
             outlined
           ></v-text-field>
 
           <v-text-field
-            v-model="userSignup.password"
+            v-model="userLogin.password"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="passwordRules"
             :type="showPassword ? 'text' : 'password'"
@@ -46,27 +38,15 @@
             @click:append="showPassword = !showPassword"
           ></v-text-field>
 
-          <v-text-field
-            v-model="repeatedPassword"
-            :append-icon="showRepeatedPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="[passwordConfirmationRule]"
-
-            :type="showRepeatedPassword ? 'text' : 'password'"
-            counter
-            label="Repeat Password"
-            outlined
-            @click:append="showRepeatedPassword = !showRepeatedPassword"
-          ></v-text-field>
-
           <v-btn
             :disabled="!valid"
             :loading="loading"
             block
             class="mt-6"
             color="success"
-            @click="signUp"
+            @click="login"
           >
-            Sign up
+            Sign in
           </v-btn>
 
         </v-form>
@@ -77,48 +57,41 @@
 </template>
 
 <script>
-import CardFormError from '../components/CardFormError'
-import fieldRules from '../mixins/fieldRules'
+import CardFormError from '../../components/CardFormError'
+import fieldRules from '../../mixins/fieldRules'
 import { mapFields } from 'vuex-map-fields'
 
 export default {
-  name: 'signup',
+  name: 'login',
   data: () => ({
-    userSignup: {
-      fullName: '',
+    userLogin: {
       username: '',
       password: '',
     },
     showPassword: false,
-    repeatedPassword: '',
-    showRepeatedPassword: false,
     valid: false,
     loading: false,
     error: false
   }),
-  components: {
-    CardFormError
-  },
   computed: {
     ...mapFields([
       'fullName',
       'username',
       'authorization'
-    ]),
-    passwordConfirmationRule() {
-      return (this.userSignup.password === this.repeatedPassword) || 'Password must match'
-    },
+    ])
+  },
+  components: {
+    CardFormError
   },
   mixins: [fieldRules],
   methods: {
-    async signUp() {
+    async login() {
       try {
         this.loading = true
 
-        const {headers} = await this.$axios.post('/api/v1/users/signup', this.userSignup)
-
-        this.fullName = this.userSignup.fullName
-        this.username = this.userSignup.username
+        const {headers} = await this.$axios.post('/api/v1/users/login', this.userLogin)
+        // this.fullName = this.userLogin.fullname // TODO
+        this.username = this.userLogin.username
         this.authorization = headers.authorization
 
         await this.$router.push(`/user`)
