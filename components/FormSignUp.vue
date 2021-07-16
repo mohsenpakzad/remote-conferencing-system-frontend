@@ -1,16 +1,14 @@
 <template>
-
   <v-form
     v-model="valid"
   >
-
     <card-form-error
       v-if="error"
       message="The input email has already been used."
     ></card-form-error>
 
     <v-text-field
-      v-model="registerData.fullName"
+      v-model="userSignup.fullName"
       :counter="50"
       :rules="fullNameRules"
       label="Full name"
@@ -18,14 +16,14 @@
     ></v-text-field>
 
     <v-text-field
-      v-model="registerData.email"
-      :rules="emailRules"
-      label="E-mail"
+      v-model="userSignup.username"
+      :rules="usernameRules"
+      label="Username"
       outlined
     ></v-text-field>
 
     <v-text-field
-      v-model="registerData.password"
+      v-model="userSignup.password"
       :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
       :rules="passwordRules"
       :type="showPassword ? 'text' : 'password'"
@@ -59,20 +57,19 @@
     </v-btn>
 
   </v-form>
-
 </template>
 
 <script>
 import CardFormError from './CardFormError'
 import fieldRules from '../mixins/fieldRules'
-import { mapActions } from 'vuex'
+import { mapFields } from 'vuex-map-fields'
 
 export default {
   name: 'FormSignUp',
   data: () => ({
-    registerData: {
+    userSignup: {
       fullName: '',
-      email: '',
+      username: '',
       password: '',
     },
     showPassword: false,
@@ -86,22 +83,25 @@ export default {
     CardFormError
   },
   computed: {
+    ...mapFields([
+      'username',
+      'authorization'
+    ]),
     passwordConfirmationRule() {
-      return (this.registerData.password === this.repeatedPassword) || 'Password must match'
+      return (this.userSignup.password === this.repeatedPassword) || 'Password must match'
     },
   },
   mixins: [fieldRules],
   methods: {
-    ...mapActions('userInformation', ['loginUser']),
     async signUp() {
       try {
         this.loading = true
-        await this.$axios.post('/users/signup', this.registerData)
 
-        const email = this.registerData.email
-        const password = this.registerData.password
+        const {headers} = await this.$axios.post('/api/v1/users/signup', this.userSignup)
+        this.authorization = headers.authorization
+        this.username = this.userSignup.username // todo
 
-        await this.loginUser({email, password})
+        await this.$router.push(`/user`)
       } catch (error) {
         this.error = true
         console.log(error)

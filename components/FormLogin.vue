@@ -2,21 +2,20 @@
   <v-form
     v-model="valid"
   >
-
     <card-form-error
       v-if="error"
       message="Incorrect email or password."
     ></card-form-error>
 
     <v-text-field
-      v-model="loginData.email"
-      :rules="emailRules"
-      label="Email"
+      v-model="userLogin.username"
+      :rules="usernameRules"
+      label="Username"
       outlined
     ></v-text-field>
 
     <v-text-field
-      v-model="loginData.password"
+      v-model="userLogin.password"
       :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
       :rules="passwordRules"
       :type="showPassword ? 'text' : 'password'"
@@ -44,13 +43,13 @@
 <script>
 import CardFormError from './CardFormError'
 import fieldRules from '../mixins/fieldRules'
-import { mapActions } from 'vuex'
+import { mapFields } from 'vuex-map-fields'
 
 export default {
   name: 'FormSignIn',
   data: () => ({
-    loginData: {
-      email: '',
+    userLogin: {
+      username: '',
       password: '',
     },
     showPassword: false,
@@ -58,16 +57,26 @@ export default {
     loading: false,
     error: false
   }),
+  computed: {
+    ...mapFields([
+      'username',
+      'authorization'
+    ])
+  },
   components: {
     CardFormError
   },
   mixins: [fieldRules],
   methods: {
-    ...mapActions('userInformation', ['loginUser']),
     async login() {
       try {
         this.loading = true
-        await this.loginUser(this.loginData)
+
+        const {headers} = await this.$axios.post('/api/v1/users/login', this.userLogin)
+        this.authorization = headers.authorization
+        this.username = this.userLogin.username
+
+        await this.$router.push(`/user`)
       } catch (error) {
         this.error = true
         console.log(error)
