@@ -26,11 +26,12 @@
       <v-col
         v-for="(headerButton, i) in headerButtons"
         v-bind:key="i"
+        cols="auto"
       >
         <v-btn
-          class="mr-2"
           nuxt
           text
+          exact
           v-bind:to="headerButton.link"
         >
           {{ headerButton.name }}
@@ -41,7 +42,7 @@
     <v-spacer></v-spacer>
 
     <template
-      v-if="!$route.path.startsWith('/user')"
+      v-if="!isLoggedIn"
     >
       <v-row
         justify="end"
@@ -99,23 +100,38 @@ import { mapFields } from 'vuex-map-fields'
 
 export default {
   name: 'AppHeader',
-  data: () => ({
-    headerButtons: [
-      {
-        name: 'About Us',
-        link: '/about'
-      },
-    ],
-  }),
   computed: {
     ...mapFields([
+      'isLoggedIn',
       'fullName',
       'username',
       'authorization'
-    ])
+    ]),
+    headerButtons(){
+      return this.isLoggedIn ? [
+        {
+          name: 'User Home',
+          link: '/user'
+        },
+        {
+          name: 'Settings',
+          link: '/user/settings'
+        },
+        {
+          name: 'About Us',
+          link: '/about'
+        }
+      ] : [
+        {
+          name: 'About Us',
+          link: '/about'
+        }
+      ];
+    }
   },
   methods:{
     logout(){
+      this.isLoggedIn = false
       this.fullName = ''
       this.username = ''
       this.authorization = ''

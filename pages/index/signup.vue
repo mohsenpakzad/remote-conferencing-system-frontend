@@ -101,6 +101,7 @@ export default {
   },
   computed: {
     ...mapFields([
+      'isLoggedIn',
       'fullName',
       'username',
       'authorization'
@@ -117,6 +118,7 @@ export default {
 
         const {headers} = await this.$axios.post('/api/v1/users/signup', this.userSignup)
 
+        this.isLoggedIn = true
         this.fullName = this.userSignup.fullName
         this.username = this.userSignup.username
         this.authorization = headers.authorization
