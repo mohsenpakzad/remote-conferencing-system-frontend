@@ -49,7 +49,7 @@
         cols="auto"
       >
         <v-btn
-          v-if="$route.path !== '/signin'"
+          v-if="$route.path !== '/login'"
           nuxt
           text
           to="/login"
