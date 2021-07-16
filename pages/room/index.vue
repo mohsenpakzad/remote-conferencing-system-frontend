@@ -1,9 +1,14 @@
 <template>
-  <p>Room main page</p>
+  <div>
+    <p>Room main page</p>
+    <socket-sample></socket-sample>
+  </div>
 </template>
 
 <script>
+import SocketSample from '../../components/SocketSample'
 export default {
-  name: 'index'
+  name: 'index',
+  components: {SocketSample}
 }
 </script>

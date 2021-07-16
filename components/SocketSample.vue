@@ -30,7 +30,7 @@ export default {
   }),
   methods: {
     sendMessage() {
-      this.$socket.send(`/app/room/${this.roomId}/addPublicChat`, JSON.stringify(this.message), {})
+      this.$stomp.send(`/app/room/${this.roomId}/addPublicChat`, JSON.stringify(this.message), {})
     },
     login() {
       this.axios.post('http://localhost:8080/api/v1/users/login', {
@@ -40,17 +40,17 @@ export default {
         .catch(err => console.log(err))
     },
     join() {
-      this.$socket.send(`/app/room/${this.roomId}/joinRoom`, null, {})
+      this.$stomp.send(`/app/room/${this.roomId}/joinRoom`, null, {})
     },
     subscribe() {
       // /channel/room/%s/publicChats
-      this.$socket.subscribe(`/topic/room/${this.roomId}/publicChats`, (payload) => {
+      this.$stomp.subscribe(`/topic/room/${this.roomId}/publicChats`, (payload) => {
         const message = JSON.parse(payload.body)
         console.log('cuuuuuuuuuuuuuuuummmmmmmmmmmmming')
         console.log(message)
       })
 
-      this.$socket.subscribe(`/topic/room/${this.roomId}/users`, (payload) => {
+      this.$stomp.subscribe(`/topic/room/${this.roomId}/users`, (payload) => {
         const message = JSON.parse(payload.body)
         console.log('cuuuuuuuuuuuuuuuummmmmmmmmmmmming')
         console.log(message)
@@ -62,7 +62,7 @@ export default {
       const headers = {
         token: authorization
       }
-      this.$socket.connect(headers, (frame) => {
+      this.$stomp.connect(headers, (frame) => {
         console.log('connected')
 
         console.log('Frame:')

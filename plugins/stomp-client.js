@@ -6,5 +6,5 @@ import Stomp from 'webstomp-client'
 const socket = new Sockjs('http://localhost:8080/ws'); // TODO: remove hardcoded code later
 
 export default ({ app }, inject) => {
-  inject('socket', Vue.observable(Stomp.over(socket)))
+  inject('stomp', Vue.observable(Stomp.over(socket)))
 }
