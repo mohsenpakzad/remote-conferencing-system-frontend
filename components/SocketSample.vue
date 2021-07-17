@@ -1,18 +1,25 @@
 <template>
-  <v-container align="center" justify="center">
-    <div>
-      <input v-model="roomId" placeholder="username" type="text"/>
-    </div>
-    <div>
-      <input v-model="message.content" placeholder="content" type="text"/>
-    </div>
-    <v-btn @click="sendMessage">Add Message</v-btn>
-    <div>{{ message }}</div>
+  <v-container fluid>
 
-    <v-btn @click="login">Login</v-btn>
-    <!--    <button @click="connectToSocket">Try to Connect</button>-->
-    <v-btn @click="join">Join</v-btn>
-    <v-btn @click="subscribe">Subscribe</v-btn>
+    <v-text-field
+      v-model="roomId"
+      type="text"
+      label="Room Id"
+      outlined
+    ></v-text-field>
+
+    <v-text-field
+      v-model="message.content"
+      type="text"
+      label="Message Content"
+      outlined
+    ></v-text-field>
+
+    <p>Message: {{ message }}</p>
+
+    <v-btn class="mr-1" @click="join">Join And Subscribe</v-btn>
+    <v-btn @click="sendMessage">Add Message</v-btn>
+
   </v-container>
 </template>
 
@@ -21,10 +28,9 @@
 export default {
   name: 'SocketSample',
   data: () => ({
-    roomId: '60e48c3c3537533fe574565c',
-    Authorization: 'Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiI2MGU0OGJjNDM1Mzc1MzNmZTU3NDU2NWIiLCJpYXQiOjE2MjU1OTA3NTJ9.a3XsGJy7tZp01RgLmEUQkQ1q60QTI2AJnFmYrdO9k7FOML2LI4aAxxoNnvip_q1g'
-    , message: {
-      content: 'hellloooooooo',
+    roomId: '60e48c3c3537533fe574565c', // !!!!!!!!FILL THIS WITH YOUR OWN ROOM ID!!!!!!!!
+    message: {
+      content: 'Hellllllooo',
     },
     chats: []
   }),
@@ -32,35 +38,25 @@ export default {
     sendMessage() {
       this.$stomp.send(`/app/room/${this.roomId}/addPublicChat`, JSON.stringify(this.message), {})
     },
-    login() {
-      this.axios.post('http://localhost:8080/api/v1/users/login', {
-        username: 'mohsen',
-        password: '123'
-      }).then(res => console.log(res))
-        .catch(err => console.log(err))
-    },
     join() {
       this.$stomp.send(`/app/room/${this.roomId}/joinRoom`, null, {})
+      this.subscribe()
     },
     subscribe() {
-      // /channel/room/%s/publicChats
       this.$stomp.subscribe(`/topic/room/${this.roomId}/publicChats`, (payload) => {
         const message = JSON.parse(payload.body)
-        console.log('cuuuuuuuuuuuuuuuummmmmmmmmmmmming')
+        console.log('Public chat cuuuuuuuuuuuuuuuummmmmmmmmmmmming')
         console.log(message)
       })
-
       this.$stomp.subscribe(`/topic/room/${this.roomId}/users`, (payload) => {
         const message = JSON.parse(payload.body)
-        console.log('cuuuuuuuuuuuuuuuummmmmmmmmmmmming')
+        console.log('User cuuuuuuuuuuuuuuuummmmmmmmmmmmming')
         console.log(message)
       })
     },
     connectToSocket() {
-
-      const authorization = this.Authorization
       const headers = {
-        token: authorization
+        token: this.$store.getters.apiToken
       }
       this.$stomp.connect(headers, (frame) => {
         console.log('connected')
