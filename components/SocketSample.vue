@@ -17,7 +17,8 @@
 
     <p>Message: {{ message }}</p>
 
-    <v-btn class="mr-1" @click="join">Join And Subscribe</v-btn>
+    <v-btn class="mr-1" @click="join">Join</v-btn>
+    <v-btn class="mr-1" @click="subscribe">Subscribe Events</v-btn>
     <v-btn @click="sendMessage">Add Message</v-btn>
 
   </v-container>
@@ -40,7 +41,6 @@ export default {
     },
     join() {
       this.$stomp.send(`/app/room/${this.roomId}/joinRoom`, null, {})
-      this.subscribe()
     },
     subscribe() {
       this.$stomp.subscribe(`/topic/room/${this.roomId}/publicChats`, (payload) => {
@@ -59,10 +59,6 @@ export default {
         token: this.$store.getters.apiToken
       }
       this.$stomp.connect(headers, (frame) => {
-        console.log('connected')
-
-        console.log('Frame:')
-        console.log(frame)
 
       }, () => console.log('************ Disconnected -_- ***************'))
     }
