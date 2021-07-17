@@ -79,7 +79,7 @@
 <script>
 import CardFormError from '../../components/CardFormError'
 import fieldRules from '../../mixins/fieldRules'
-import { mapFields } from 'vuex-map-fields'
+import vuexStates from '../../mixins/vuexStates'
 
 export default {
   name: 'signup',
@@ -100,17 +100,11 @@ export default {
     CardFormError
   },
   computed: {
-    ...mapFields([
-      'isLoggedIn',
-      'fullName',
-      'username',
-      'authorization'
-    ]),
     passwordConfirmationRule() {
       return (this.userSignup.password === this.repeatedPassword) || 'Password must match'
     },
   },
-  mixins: [fieldRules],
+  mixins: [fieldRules, vuexStates],
   methods: {
     async signUp() {
       try {

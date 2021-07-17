@@ -96,17 +96,11 @@
 </template>
 
 <script>
-import { mapFields } from 'vuex-map-fields'
+import vuexStates from '../mixins/vuexStates'
 
 export default {
   name: 'AppHeader',
   computed: {
-    ...mapFields([
-      'isLoggedIn',
-      'fullName',
-      'username',
-      'authorization'
-    ]),
     headerButtons(){
       return this.isLoggedIn ? [
         {
@@ -129,6 +123,7 @@ export default {
       ];
     }
   },
+  mixins: [vuexStates],
   methods:{
     logout(){
       this.isLoggedIn = false
