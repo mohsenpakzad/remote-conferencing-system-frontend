@@ -26,6 +26,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '@/plugins/stomp-client',
+    { src: '~/plugins/vuex-persist', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -45,7 +46,7 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: 'http://localhost:8080', // TODO: remove hardcoded code later
+    baseURL: 'http://localhost:8080', // TODO: remove hardcoded code lateryarn add vuex-persist
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
