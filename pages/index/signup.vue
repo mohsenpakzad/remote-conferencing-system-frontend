@@ -17,7 +17,7 @@
         >
           <card-form-error
             v-if="error"
-            message="The input email has already been used."
+            message="The input username has already been used."
           ></card-form-error>
 
           <v-text-field
@@ -66,7 +66,7 @@
             color="success"
             @click="signUp"
           >
-            Sign up
+            Signup
           </v-btn>
 
         </v-form>
@@ -116,11 +116,11 @@ export default {
       try {
         this.loading = true
 
-        const {headers} = await this.$axios.post('/api/v1/users/signup', this.userSignup)
+        const {headers, data} = await this.$axios.post('/api/users/signup', this.userSignup)
 
         this.isLoggedIn = true
-        this.fullName = this.userSignup.fullName
-        this.username = this.userSignup.username
+        this.fullName = data.fullName
+        this.username = data.username
         this.authorization = headers.authorization
 
         await this.$router.push(`/user`)

@@ -46,7 +46,7 @@
             color="success"
             @click="login"
           >
-            Sign in
+            Login
           </v-btn>
 
         </v-form>
@@ -65,8 +65,8 @@ export default {
   name: 'login',
   data: () => ({
     userLogin: {
-      username: '',
-      password: '',
+      username: 'mohsen',
+      password: '123',
     },
     showPassword: false,
     valid: false,
@@ -90,10 +90,11 @@ export default {
       try {
         this.loading = true
 
-        const {headers} = await this.$axios.post('/api/v1/users/login', this.userLogin)
+        const {headers, data} = await this.$axios.post('/api/users/login', this.userLogin)
+
         this.isLoggedIn = true
-        // this.fullName = this.userLogin.fullname // TODO
-        this.username = this.userLogin.username
+        this.fullName = data.fullName
+        this.username = data.username
         this.authorization = headers.authorization
 
         await this.$router.push(`/user`)
