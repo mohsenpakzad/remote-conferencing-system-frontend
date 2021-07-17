@@ -8,7 +8,11 @@ export const state = () => ({
 })
 
 export const getters = {
-  getField
+  getField,
+  apiToken: (state) => state.authorization,
+  tokenHeader: (state) => ({
+    Authorization: state.authorization
+  }),
 }
 
 export const mutations = {
