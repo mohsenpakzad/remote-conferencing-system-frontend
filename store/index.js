@@ -4,7 +4,8 @@ export const state = () => ({
   isLoggedIn: false,
   fullName: '',
   username: '',
-  authorization: ''
+  authorization: '',
+  joinedRoomId: ''
 })
 
 export const getters = {

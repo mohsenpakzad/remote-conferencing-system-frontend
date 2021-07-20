@@ -6,7 +6,8 @@ export default {
       'isLoggedIn',
       'fullName',
       'username',
-      'authorization'
+      'authorization',
+      'joinedRoomId'
     ])
   }
 }
