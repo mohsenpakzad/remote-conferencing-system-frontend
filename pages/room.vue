@@ -44,20 +44,21 @@
       color="primary"
       grow
       min-height="70"
+      class="pa-1"
     >
       <v-btn nuxt to="whiteboard">
         <span>Whiteboard</span>
-        <v-icon>mdi-teach</v-icon>
+        <v-icon large>mdi-teach</v-icon>
       </v-btn>
 
       <v-btn nuxt to="chat">
         <span>Chat</span>
-        <v-icon>mdi-chat</v-icon>
+        <v-icon large>mdi-chat</v-icon>
       </v-btn>
 
       <v-btn nuxt to="qa">
         <span>Q&A</span>
-        <v-icon>mdi-help-circle</v-icon>
+        <v-icon large>mdi-help-circle</v-icon>
       </v-btn>
     </v-bottom-navigation>
 
