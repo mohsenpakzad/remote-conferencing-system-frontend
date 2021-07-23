@@ -41,7 +41,7 @@
 
     <v-bottom-navigation
       app
-      color="purple"
+      color="primary"
       grow
       min-height="70"
     >

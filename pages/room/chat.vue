@@ -27,9 +27,9 @@ export default {
   },
   data: () => ({
     chats: [
-      {id: 1, content: 'Hello guys!', isOwner: false, time: '7:15 PM'},
-      {id: 2, content: 'Oh hello, welcome', isOwner: true, time: '7:20 PM'},
-      {id: 3, content: 'Hello man, nice to meet you', isOwner: false, time: '11:30 PM'},
+      {id: 1, content: 'Hello guys!', isOwner: false, time: '7:15 PM', name: 'Ali'},
+      {id: 2, content: 'Oh hello, welcome', isOwner: true, time: '7:20 PM', name: 'Mohsen'},
+      {id: 3, content: 'Hello man, nice to meet you', isOwner: false, time: '11:30 PM', name: 'Majid'},
     ]
   })
 }
