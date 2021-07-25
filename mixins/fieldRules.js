@@ -13,5 +13,8 @@ export default {
     roomNameRules: [
       v => !!v || 'Room name is required',
     ],
+    roomIdRules: [
+      v => !!v || 'Room ID is required',
+    ],
   })
 }
