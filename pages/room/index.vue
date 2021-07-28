@@ -14,7 +14,7 @@
 import ChatItem from '../../components/ChatItem'
 import SocketSample from '../../components/SocketSample'
 import vuexStates from '../../mixins/vuexStates'
-import { v4 as newUuid } from 'uuid';
+import { v4 as newUuid } from 'uuid'
 
 export default {
   name: 'chat',
@@ -50,8 +50,8 @@ export default {
         if (publicChatEvent.type === 'CREATE') {
           this.chats.push(publicChatEvent.publicChat)
         } else if (publicChatEvent.type === 'UPDATE') {
-          this.chats = this.chats.map(e =>{
-            if (e.id === publicChatEvent.publicChat.id){
+          this.chats = this.chats.map(e => {
+            if (e.id === publicChatEvent.publicChat.id) {
               return publicChatEvent.publicChat
             }
             return e
@@ -72,14 +72,14 @@ export default {
           const joinMessage = {
             id: newUuid(),
             content: `${userEntranceEvent.role.user.username} joined the room`,
-            type: 'SYSTEM', // SOME HACKING!
+            type: 'SYSTEM',
           }
           this.chats.push(joinMessage)
         } else if (userEntranceEvent.type === 'LEAVE') {
           const leaveMessage = {
             id: newUuid(),
             content: `${userEntranceEvent.role.user.username} left the room`,
-            type: 'SYSTEM', // SOME HACKING!
+            type: 'SYSTEM',
           }
           this.chats.push(leaveMessage)
         }
@@ -101,7 +101,7 @@ export default {
 
       })
     },
-    joinToRoom(){
+    joinToRoom() {
       this.$stomp.send(`/app/room/${this.joinedRoomId}/joinRoom`, null, {})
     }
   },
