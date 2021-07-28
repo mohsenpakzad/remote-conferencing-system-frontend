@@ -85,6 +85,7 @@
         </v-list-item>
 
 
+        <!--TODO: userRoleType == 'OWNER' ||  userRoleType == 'HOST' won't work! -->
         <v-list-item v-if="userRoleType !== 'PARTICIPANT'" @click="exportUsersActivities">
           <v-list-item-avatar>
             <v-icon>mdi-account-clock</v-icon>
