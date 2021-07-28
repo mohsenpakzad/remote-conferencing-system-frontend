@@ -44,10 +44,6 @@ export default {
     '@nuxtjs/axios',
   ],
 
-  serverMiddleware: [
-    '~/middleware/redirects.js'
-  ],
-
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     baseURL: 'http://localhost:8080', // TODO: remove hardcoded code lateryarn add vuex-persist
