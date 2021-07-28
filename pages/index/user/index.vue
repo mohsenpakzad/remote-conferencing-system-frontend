@@ -84,7 +84,7 @@
               </v-list-item-content>
 
               <v-list-item-action>
-                <v-btn dark rounded color="deep-purple accent-4" nuxt to="/room">
+                <v-btn dark rounded color="deep-purple accent-4" nuxt @click="joinRoom(joinedRoom.id)">
                   Join
                 </v-btn>
               </v-list-item-action>
@@ -135,7 +135,7 @@
               </v-list-item-content>
 
               <v-list-item-action>
-                <v-btn dark rounded color="deep-purple accent-4" nuxt to="/room">
+                <v-btn dark rounded color="deep-purple accent-4" nuxt @click="joinRoom(registeredRoom.id)">
                   Join
                 </v-btn>
               </v-list-item-action>
@@ -155,6 +155,7 @@
     <v-snackbar
       v-model="snackbar"
       :timeout="snackbarTimeout"
+      shaped
     >
       ID copied to clipboard
 
@@ -195,7 +196,11 @@ export default {
     },
     joinRoom(roomId) {
       this.joinedRoomId = roomId
-      this.$router.push('/room')
+      this.$router.push('/room/')
+    },
+    joinRoomById() {
+      this.joinedRoomId = this.roomId
+      this.$router.push('/room/')
     },
     async fetchJoinedRooms() {
       try {
@@ -228,9 +233,6 @@ export default {
       } catch (e) {
         console.log(e)
       }
-    },
-    async joinRoomById() {
-
     }
   },
   async mounted() {

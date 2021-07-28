@@ -1,25 +1,28 @@
 <template>
   <v-text-field
     class="chat_input"
-    v-model="chat.content"
+    v-model="chatInput"
     label="Message..."
     outlined
-    :append-icon="chat.content.length > 0 ? 'mdi-send' : ''"
+    :append-icon="chatInput.length > 0 ? 'mdi-send' : ''"
     @click:append="send"
   />
 </template>
 
 <script>
+import vuexStates from '../mixins/vuexStates'
 
 export default {
   data: () => ({
-    chat:{
-     content: ''
-    }
   }),
+  mixins: [vuexStates],
   methods: {
     send() {
-      console.log('send it!')
+      const payload = {
+        content: this.chatInput
+      }
+      this.$stomp.send(`/app/room/${this.joinedRoomId}/addPublicChat`, JSON.stringify(payload), {})
+      this.chatInput = ''
     },
   },
 }
@@ -27,6 +30,7 @@ export default {
 
 <style scoped>
 .chat_input {
+  background: white;
   position: absolute;
   bottom: 0;
   left: 0;

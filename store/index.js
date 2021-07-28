@@ -5,7 +5,9 @@ export const state = () => ({
   fullName: '',
   username: '',
   authorization: '',
-  joinedRoomId: ''
+  joinedRoomId: '',
+  joinedRoomName: '',
+  chatInput: ''
 })
 
 export const getters = {

@@ -7,7 +7,9 @@ export default {
       'fullName',
       'username',
       'authorization',
-      'joinedRoomId'
+      'joinedRoomId',
+      'joinedRoomName',
+      'chatInput'
     ])
   }
 }

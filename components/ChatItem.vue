@@ -5,7 +5,7 @@
   >
 
     <p
-      v-if="isSystemMessage"
+      v-if="chat.type === 'SYSTEM'"
       class="text-center font-italic system"
     >
       {{ chat.content }}
@@ -15,23 +15,53 @@
       v-else
       class="msg-wrapper"
     >
-      <v-row
-        no-gutters
-        justify="space-between"
-        class="msg"
-        :class="{ isOwner }"
-      >
-        <v-col>
-          <span class="font-weight-bold">{{ chat.name }}</span>
-          <p class="mb-0">
-            {{ chat.content }}
-          </p>
-        </v-col>
 
-        <v-col cols="auto">
-          <span class="msg__date ml-3">{{ chat.time }}</span>
-        </v-col>
-      </v-row>
+        <v-row
+          v-if="checkValidityOfChat"
+          no-gutters
+          justify="space-between"
+          class="msg"
+          :class="username === chat.senderRole.user.username ? 'isOwner' : ''"
+        >
+
+          <v-col>
+            <span v-if="checkValidityOfChat" class="font-weight-bold">{{ chat.senderRole.user.username }}</span>
+            <p class="mb-0">
+              {{ chat.content }}
+            </p>
+          </v-col>
+
+          <v-col cols="auto">
+            <span class="msg__date ml-3">{{ chat.createdDate }}</span>
+          </v-col>
+          <v-col v-if="checkValidityOfChat" cols="auto">
+            <v-menu
+              bottom
+              open-on-click
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  mdi-dots-horizontal
+                </v-icon>
+              </template>
+
+              <v-list>
+                <v-list-item v-if="chatInput.length > 0" @click="editItem">
+                  <v-list-item-title>Edit</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="deleteItem">
+                  <v-list-item-title>Delete</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+
+          </v-col>
+        </v-row>
+
+
 
     </v-col>
 
@@ -39,28 +69,46 @@
 </template>
 
 <script>
+import vuexStates from '../mixins/vuexStates'
+
 export default {
   props: {
     chat: {
       type: Object,
-      default: () => {},
-    },
-    isOwner: {
-      type: Boolean,
+      default: () => ({
+        createdDate: '',
+        senderRole: {
+          user: {
+            username: ''
+          }
+        }
+      }),
     },
   },
+  mixins: [vuexStates],
   computed: {
-    isSystemMessage() {
-      return this.chat.name === "admin";
+    checkValidityOfChat() {
+      return this.chat.senderRole && this.chat.senderRole.user
     },
   },
-};
+  methods:{
+    editItem(){
+      const payload = {
+        content: this.chatInput
+      }
+      this.$stomp.send(`/app/public-chat/${this.chat.id}/updatePublicChat`, JSON.stringify(payload), {})
+      this.chatInput = ''
+    },
+    deleteItem(){
+      this.$stomp.send(`/app/public-chat/${this.chat.id}/deletePublicChat`, null, {})
+    },
+  }
+}
 </script>
 
 <style lang="scss" scoped>
 .system {
   margin-bottom: 1rem;
-  color: #fff;
 
   p {
     margin-bottom: 1rem;
