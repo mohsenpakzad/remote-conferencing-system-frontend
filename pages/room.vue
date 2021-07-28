@@ -10,6 +10,7 @@
         <v-subheader>Joined as {{ username }}</v-subheader>
 
         <v-list-group
+          :value="true"
           no-action
           prepend-icon="mdi-account-circle"
         >
