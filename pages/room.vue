@@ -84,6 +84,14 @@
           <v-list-item-title>Export Chats</v-list-item-title>
         </v-list-item>
 
+
+        <v-list-item v-if="userRoleType !== 'PARTICIPANT'" @click="exportUsersActivities">
+          <v-list-item-avatar>
+            <v-icon>mdi-account-clock</v-icon>
+          </v-list-item-avatar>
+          <v-list-item-title>Export Users Activities</v-list-item-title>
+        </v-list-item>
+
       </v-list>
     </v-navigation-drawer>
 
@@ -178,20 +186,31 @@ export default {
       this.$stomp.disconnect()
       this.$router.push('/user/')
     },
+    downloadObjectAsJson(exportObj, exportName){
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href",     dataStr);
+      downloadAnchorNode.setAttribute("download", `${exportName}.json`);
+      document.body.appendChild(downloadAnchorNode); // required for firefox
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    },
     async exportChats() {
       try {
         const {data} = await this.$axios.get(`api/rooms/${this.joinedRoomId}/public-chats`, {
           headers: this.$store.getters.tokenHeader
         })
-
-        const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data))
-        const downloadAnchorNode = document.createElement('a')
-        downloadAnchorNode.setAttribute('href', dataStr)
-        downloadAnchorNode.setAttribute('download', `room_${this.joinedRoomId}_chats.json`)
-        document.body.appendChild(downloadAnchorNode) // required for firefox
-        downloadAnchorNode.click()
-        downloadAnchorNode.remove()
-
+        this.downloadObjectAsJson(data, `room_${this.joinedRoomId}_chats`)
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async exportUsersActivities(){
+      try {
+        const {data} = await this.$axios.get(`api/rooms/${this.joinedRoomId}/roles`, {
+          headers: this.$store.getters.tokenHeader
+        })
+        this.downloadObjectAsJson(data, `room_${this.joinedRoomId}_users_activities`)
       } catch (e) {
         console.log(e)
       }
