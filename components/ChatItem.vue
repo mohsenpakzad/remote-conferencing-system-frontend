@@ -21,7 +21,7 @@
           no-gutters
           justify="space-between"
           class="msg"
-          :class="username === chat.senderRole.user.username ? 'isOwner' : ''"
+          :class="userId === chat.senderRole.user.id ? 'isOwner' : ''"
         >
 
           <v-col>

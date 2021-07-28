@@ -46,7 +46,12 @@ export default {
         const {data} = await this.$axios.get(`api/rooms/${this.joinedRoomId}/roles`, {
           headers: this.$store.getters.tokenHeader
         })
-        this.roomRoles = data
+        this.roomRoles = data.map(e => {
+          if (e.userId === this.userId){ // specify logged in user
+            e.user.username = e.user.username + '(you)'
+          }
+          return e
+        })
       } catch (e) {
         console.log(e)
       }
