@@ -2,12 +2,15 @@ import { getField, updateField } from 'vuex-map-fields'
 
 export const state = () => ({
   isLoggedIn: false,
+  userId: '',
   fullName: '',
   username: '',
   authorization: '',
   joinedRoomId: '',
   joinedRoomName: '',
-  chatInput: ''
+  chatInput: '',
+  userRoleType: '',
+  roomRoles: []
 })
 
 export const getters = {

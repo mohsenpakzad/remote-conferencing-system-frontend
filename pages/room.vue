@@ -4,30 +4,10 @@
     <v-navigation-drawer
       app
       v-model="drawer"
+      width="350"
     >
-      <v-list subheader>
+      <v-list>
         <v-subheader>Joined as {{ username }}</v-subheader>
-
-<!--        <v-list-group-->
-<!--          :value="true"-->
-<!--          prepend-icon="mdi-account-circle"-->
-<!--        >-->
-<!--          <template v-slot:activator>-->
-<!--            <v-list-item-title>Users</v-list-item-title>-->
-<!--          </template>-->
-
-
-
-<!--            <v-list-item-->
-<!--              v-for="role in roles"-->
-<!--              :key="role.id"-->
-<!--              link-->
-<!--            >-->
-<!--              <v-list-item-title v-text="role.user.username"></v-list-item-title>-->
-
-<!--            </v-list-item>-->
-
-<!--        </v-list-group>-->
 
         <v-list-group
           no-action
@@ -39,21 +19,61 @@
             </v-list-item-content>
           </template>
 
-          <v-list-item
-            v-for="role in roles"
-            :key="role.id"
-            link
+          <template
+            v-for="role in roomRoles"
           >
-            <v-list-item-title v-text="role.user.username"></v-list-item-title>
-            <v-list-item-subtitle v-text="capitalize(role.type)"></v-list-item-subtitle>
 
-            <v-list-item-icon>
-              <v-icon v-if="role.type === 'OWNER'">mdi-crown</v-icon>
-              <v-icon v-else-if="role.type === 'HOST'">mdi-account-star</v-icon>
-              <v-icon v-else-if="role.type === 'PARTICIPANT'">mdi-account</v-icon>
-            </v-list-item-icon>
+            <v-list-group
+              v-if="role.isOnline === true && userRoleType === 'OWNER' && role.type !== 'OWNER'"
+              sub-group
+            >
 
-          </v-list-item>
+              <template v-slot:activator v-if="role.user">
+
+                  <v-list-item-title v-text="role.user.username"></v-list-item-title>
+                  <v-list-item-subtitle v-text="capitalize(role.type)"></v-list-item-subtitle>
+
+                  <v-list-item-icon>
+                    <v-icon v-if="role.type === 'OWNER'">mdi-crown</v-icon>
+                    <v-icon v-else-if="role.type === 'HOST'">mdi-account-star</v-icon>
+                    <v-icon v-else-if="role.type === 'PARTICIPANT'">mdi-account</v-icon>
+                  </v-list-item-icon>
+
+              </template>
+
+              <v-list-item
+                v-if="role.type === 'PARTICIPANT'"
+                @click="promoteToHost(role)"
+              >
+                <v-list-item-title>Promote to Host</v-list-item-title>
+              </v-list-item>
+              <v-list-item
+                v-else-if="role.type === 'HOST'"
+                @click="demoteToParticipant(role)"
+              >
+                <v-list-item-title>Demote to Participant</v-list-item-title>
+              </v-list-item>
+            </v-list-group>
+
+            <v-list-item
+              v-else-if="role.user"
+              :disabled="!role.isOnline"
+            >
+
+              <v-list-item-title v-text="role.user.username"></v-list-item-title>
+              <v-list-item-subtitle v-text="capitalize(role.type)"></v-list-item-subtitle>
+
+              <v-list-item-icon>
+                <v-icon v-if="role.type === 'OWNER'">mdi-crown</v-icon>
+                <v-icon v-else-if="role.type === 'HOST'">mdi-account-star</v-icon>
+                <v-icon v-else-if="role.type === 'PARTICIPANT'">mdi-account</v-icon>
+              </v-list-item-icon>
+
+            </v-list-item>
+
+          </template>
+
+
         </v-list-group>
 
         <v-list-item @click="exportChats">
@@ -73,7 +93,7 @@
       <v-app-bar-nav-icon @click="drawer = !drawer"/>
 
       <v-toolbar-title>
-        Room name: {{  }} | Room Id: {{ joinedRoomId }}
+        {{ joinedRoomName }} | {{ joinedRoomId }}
       </v-toolbar-title>
 
       <v-spacer/>
@@ -134,49 +154,60 @@ export default {
     ChatInput
   },
   data: () => ({
-    drawer: false,
-    roles: []
+    drawer: false
   }),
   mixins: [vuexStates],
-  methods:{
-    capitalize(input){
-      return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
+  methods: {
+    promoteToHost(role) {
+      const payload = {
+        type: 'HOST'
+      }
+      this.$stomp.send(`/app/role/${role.id}/updateRole`, JSON.stringify(payload), {})
     },
-    leaveRoom(){
+    demoteToParticipant(role) {
+      const payload = {
+        type: 'PARTICIPANT'
+      }
+      this.$stomp.send(`/app/role/${role.id}/updateRole`, JSON.stringify(payload), {})
+    },
+    capitalize(input) {
+      return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase()
+    },
+    leaveRoom() {
       this.$stomp.disconnect()
       this.$router.push('/user/')
     },
-    async exportChats(){
+    async exportChats() {
       try {
         const {data} = await this.$axios.get(`api/rooms/${this.joinedRoomId}/public-chats`, {
           headers: this.$store.getters.tokenHeader
         })
 
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-        const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href",     dataStr);
-        downloadAnchorNode.setAttribute("download", `room_${this.joinedRoomId}_chats.json`);
-        document.body.appendChild(downloadAnchorNode); // required for firefox
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
+        const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data))
+        const downloadAnchorNode = document.createElement('a')
+        downloadAnchorNode.setAttribute('href', dataStr)
+        downloadAnchorNode.setAttribute('download', `room_${this.joinedRoomId}_chats.json`)
+        document.body.appendChild(downloadAnchorNode) // required for firefox
+        downloadAnchorNode.click()
+        downloadAnchorNode.remove()
 
       } catch (e) {
         console.log(e)
       }
     },
-    async fetchRoles() {
+    async fetchRoomInfo() {
       try {
-        const {data} = await this.$axios.get(`api/rooms/${this.joinedRoomId}/roles`, {
+        const {data} = await this.$axios.get(`api/rooms/${this.joinedRoomId}`, {
           headers: this.$store.getters.tokenHeader
         })
-        this.roles = data
+        this.joinedRoomName = data.name
       } catch (e) {
         console.log(e)
       }
-    }
+    },
   },
   async mounted() {
-    await this.fetchRoles()
+    await this.fetchRoomInfo()
   }
 }
 </script>

@@ -4,12 +4,18 @@ export default {
   computed: {
     ...mapFields([
       'isLoggedIn',
+      'userId',
       'fullName',
       'username',
       'authorization',
+
       'joinedRoomId',
       'joinedRoomName',
-      'chatInput'
+
+      'chatInput',
+
+      'userRoleType',
+      'roomRoles'
     ])
   }
 }

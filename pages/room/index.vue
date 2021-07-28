@@ -41,11 +41,21 @@ export default {
         console.log(e)
       }
     },
+    async fetchRoles() {
+      try {
+        const {data} = await this.$axios.get(`api/rooms/${this.joinedRoomId}/roles`, {
+          headers: this.$store.getters.tokenHeader
+        })
+        this.roomRoles = data
+      } catch (e) {
+        console.log(e)
+      }
+    },
     subscribeChats() {
-
       this.$stomp.subscribe(`/topic/room/${this.joinedRoomId}/publicChats`, (payload) => {
         const publicChatEvent = JSON.parse(payload.body)
         console.log('**********Public chat event coming**********')
+        console.log(publicChatEvent)
 
         if (publicChatEvent.type === 'CREATE') {
           this.chats.push(publicChatEvent.publicChat)
@@ -63,12 +73,21 @@ export default {
 
     },
     subscribeUsers() {
-
       this.$stomp.subscribe(`/topic/room/${this.joinedRoomId}/users`, (payload) => {
         const userEntranceEvent = JSON.parse(payload.body)
         console.log('**********User entrance event coming**********')
+        console.log(userEntranceEvent)
 
         if (userEntranceEvent.type === 'JOIN') {
+          // add role to list
+          this.roomRoles = this.roomRoles.map(e => {
+            if (e.id === userEntranceEvent.role.id) {
+              return {...e, isOnline: true}
+            }
+            return e
+          })
+
+          // create join message
           const joinMessage = {
             id: newUuid(),
             content: `${userEntranceEvent.role.user.username} joined the room`,
@@ -76,12 +95,42 @@ export default {
           }
           this.chats.push(joinMessage)
         } else if (userEntranceEvent.type === 'LEAVE') {
+          // remove role from list
+          this.roomRoles = this.roomRoles.map(e => {
+            if (e.id === userEntranceEvent.role.id) {
+              return {...e, isOnline: false}
+            }
+            return e
+          })
+
+          // create join message
           const leaveMessage = {
             id: newUuid(),
             content: `${userEntranceEvent.role.user.username} left the room`,
             type: 'SYSTEM',
           }
           this.chats.push(leaveMessage)
+        }
+      })
+    },
+    subscribeRoles() {
+      this.$stomp.subscribe(`/topic/room/${this.joinedRoomId}/roles`, (payload) => {
+        const roleEvent = JSON.parse(payload.body)
+        console.log('**********Role event coming**********')
+        console.log(roleEvent)
+
+        if (roleEvent.type === 'UPDATE') {
+          this.roomRoles = this.roomRoles.map(e => {
+            if (e.id === roleEvent.role.id) {
+
+              if (roleEvent.role.userId === this.userId){ //update vuex state
+                this.userRoleType = roleEvent.role.type
+              }
+
+              return roleEvent.role
+            }
+            return e
+          })
         }
       })
 
@@ -108,11 +157,17 @@ export default {
   async mounted() {
     await this.connectToSocket()
     this.joinToRoom()
+
+    await this.fetchRoles()
+    const userRole = this.roomRoles.find(value => value.userId === this.userId) // store current user role
+    this.userRoleType = userRole.type
+
     await this.fetchChats()
 
 
     this.subscribeChats()
     this.subscribeUsers()
+    this.subscribeRoles()
   }
 }
 </script>

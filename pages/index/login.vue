@@ -85,6 +85,7 @@ export default {
         const {headers, data} = await this.$axios.post('/api/users/login', this.userLogin)
 
         this.isLoggedIn = true
+        this.userId = data.id
         this.fullName = data.fullName
         this.username = data.username
         this.authorization = headers.authorization
