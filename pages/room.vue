@@ -208,7 +208,7 @@ export default {
     },
     async exportUsersActivities(){
       try {
-        const {data} = await this.$axios.get(`api/rooms/${this.joinedRoomId}/roles`, {
+        const {data} = await this.$axios.get(`api/rooms/${this.joinedRoomId}/roles-activities`, {
           headers: this.$store.getters.tokenHeader
         })
         this.downloadObjectAsJson(data, `room_${this.joinedRoomId}_users_activities`)
