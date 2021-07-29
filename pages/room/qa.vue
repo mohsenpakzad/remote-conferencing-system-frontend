@@ -9,7 +9,7 @@
       >
         <template v-slot:activator>
           <v-list-item-content>
-            <v-list-item-title class="font-weight-bold text-h6" v-text="question.content"></v-list-item-title>
+            <v-list-item-title class="text-h6" v-text="question.content"></v-list-item-title>
           </v-list-item-content>
         </template>
 
@@ -59,7 +59,7 @@
 
             <v-list-item-title
               v-else
-              class="text-h5"
+              class="text-h6"
             >
               Type your question:
             </v-list-item-title>
