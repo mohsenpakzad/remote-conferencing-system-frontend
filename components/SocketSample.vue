@@ -26,10 +26,15 @@
 
 <script>
 
+import { Client } from '@stomp/stompjs'
+import Sockjs from 'sockjs-client'
+
+let client
+
 export default {
   name: 'SocketSample',
   data: () => ({
-    roomId: '60e48c3c3537533fe574565c', // !!!!!!!!FILL THIS WITH YOUR OWN ROOM ID!!!!!!!!
+    roomId: '6100a7d140fb0616b9f01917', // !!!!!!!!FILL THIS WITH YOUR OWN ROOM ID!!!!!!!!
     message: {
       content: 'Hellllllooo',
     },
@@ -37,34 +42,44 @@ export default {
   }),
   methods: {
     sendMessage() {
-      this.$stomp.send(`/app/room/${this.roomId}/addPublicChat`, JSON.stringify(this.message), {})
+      client.publish({
+        destination:`/app/room/${this.roomId}/addPublicChat`,
+        body: JSON.stringify(this.message)
+      })
     },
     join() {
-      this.$stomp.send(`/app/room/${this.roomId}/joinRoom`, null, {})
+      client.publish({
+        destination:`/app/room/${this.roomId}/joinRoom`
+      })
     },
     subscribe() {
-      this.$stomp.subscribe(`/topic/room/${this.roomId}/publicChats`, (payload) => {
+      client.subscribe(`/topic/room/${this.roomId}/publicChats`, (payload) => {
         const message = JSON.parse(payload.body)
         console.log('Public chat cuuuuuuuuuuuuuuuummmmmmmmmmmmming')
         console.log(message)
       })
-      this.$stomp.subscribe(`/topic/room/${this.roomId}/users`, (payload) => {
+      client.subscribe(`/topic/room/${this.roomId}/users`, (payload) => {
         const message = JSON.parse(payload.body)
         console.log('User cuuuuuuuuuuuuuuuummmmmmmmmmmmming')
         console.log(message)
       })
     },
-    connectToSocket() {
-      const headers = {
-        token: this.$store.getters.apiToken
-      }
-      this.$stomp.connect(headers, (frame) => {
-
-      }, () => console.log('************ Disconnected -_- ***************'))
-    }
   },
   created() {
-    this.connectToSocket()
+    // const socket = new Sockjs('http://localhost:8080/ws');
+    // client = Stomp.over(socket)
+
+    const connectHeaders = {
+      token: this.$store.getters.apiToken
+    }
+    client = new Client({
+      connectHeaders,
+    })
+    client.webSocketFactory = function () {
+      return new Sockjs('http://localhost:8080/ws')
+    };
+
+    client.activate()
   }
 }
 </script>

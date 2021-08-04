@@ -21,7 +21,10 @@ export default {
       const payload = {
         content: this.chatInput
       }
-      this.$stomp.send(`/app/room/${this.joinedRoomId}/addPublicChat`, JSON.stringify(payload), {})
+      this.$stomp.publish({
+        destination: `/app/room/${this.joinedRoomId}/addPublicChat`,
+        body: JSON.stringify(payload)
+      })
       this.chatInput = ''
     },
   },

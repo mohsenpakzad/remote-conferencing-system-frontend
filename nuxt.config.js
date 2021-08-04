@@ -25,8 +25,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '@/plugins/stomp-client',
-    { src: '~/plugins/vuex-persist', ssr: false }
+    { src: '@/plugins/vuex-persist', ssr: false }, // ORDER IS CRITICAL
+    { src: '@/plugins/stomp-client', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

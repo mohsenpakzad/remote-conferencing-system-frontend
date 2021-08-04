@@ -60,9 +60,6 @@
 
           </v-col>
         </v-row>
-
-
-
     </v-col>
 
   </v-row>
@@ -96,11 +93,16 @@ export default {
       const payload = {
         content: this.chatInput
       }
-      this.$stomp.send(`/app/public-chat/${this.chat.id}/updatePublicChat`, JSON.stringify(payload), {})
+      this.$stomp.publish({
+        destination: `/app/public-chat/${this.chat.id}/updatePublicChat`,
+        body: JSON.stringify(payload)
+      })
       this.chatInput = ''
     },
     deleteItem(){
-      this.$stomp.send(`/app/public-chat/${this.chat.id}/deletePublicChat`, null, {})
+      this.$stomp.publish({
+        destination: `/app/public-chat/${this.chat.id}/deletePublicChat`
+      })
     },
   }
 }

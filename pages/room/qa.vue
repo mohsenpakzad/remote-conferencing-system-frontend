@@ -109,11 +109,17 @@ export default {
       return answer.answeredRole && answer.answeredRole.user
     },
     submitAnswer(question) {
-      this.$stomp.send(`/app/question/${question.id}/addAnswer`, JSON.stringify(question.answer), {})
+      this.$stomp.publish({
+        destination: `/app/question/${question.id}/addAnswer`,
+        body: JSON.stringify(question.answer)
+      })
       question.answer.content = ''
     },
     createQuestion() {
-      this.$stomp.send(`/app/room/${this.joinedRoomId}/addQuestion`, JSON.stringify(this.question), {})
+      this.$stomp.publish({
+        destination: `/app/room/${this.joinedRoomId}/addQuestion`,
+        body: JSON.stringify(this.question),
+      })
       this.question.content = ''
     },
     async fetchQuestions() {
@@ -134,8 +140,8 @@ export default {
       }
     },
     subscribeQuestions() {
-      this.$stomp.subscribe(`/topic/room/${this.joinedRoomId}/questions`, (payload) => {
-        const questionEvent = JSON.parse(payload.body)
+      this.$stomp.subscribe(`/topic/room/${this.joinedRoomId}/questions`, (message) => {
+        const questionEvent = JSON.parse(message.body)
         console.log('**********Question event coming**********')
         console.log(questionEvent)
 
@@ -163,8 +169,8 @@ export default {
       })
     },
     subscribeAnswers() {
-      this.$stomp.subscribe(`/topic/room/${this.joinedRoomId}/answers`, (payload) => {
-        const answerEvent = JSON.parse(payload.body)
+      this.$stomp.subscribe(`/topic/room/${this.joinedRoomId}/answers`, (message) => {
+        const answerEvent = JSON.parse(message.body)
         console.log('**********Answer event coming**********')
         console.log(answerEvent)
 

@@ -172,20 +172,26 @@ export default {
       const payload = {
         type: 'HOST'
       }
-      this.$stomp.send(`/app/role/${role.id}/updateRole`, JSON.stringify(payload), {})
+      this.$stomp.publish({
+        destination:`/app/role/${role.id}/updateRole`,
+        body: JSON.stringify(payload)
+      })
     },
     demoteToParticipant(role) {
       const payload = {
         type: 'PARTICIPANT'
       }
-      this.$stomp.send(`/app/role/${role.id}/updateRole`, JSON.stringify(payload), {})
+      this.$stomp.publish({
+        destination:`/app/role/${role.id}/updateRole`,
+        body: JSON.stringify(payload)
+      })
     },
     capitalize(input) {
       return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase()
     },
-    leaveRoom() {
-      this.$stomp.disconnect()
-      this.$router.push('/user/')
+    async leaveRoom() {
+      await this.$stomp.deactivate()
+      await this.$router.push('/user/')
     },
     downloadObjectAsJson(exportObj, exportName){
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));

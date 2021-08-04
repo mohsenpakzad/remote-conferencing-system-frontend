@@ -57,8 +57,8 @@ export default {
       }
     },
     subscribeChats() {
-      this.$stomp.subscribe(`/topic/room/${this.joinedRoomId}/publicChats`, (payload) => {
-        const publicChatEvent = JSON.parse(payload.body)
+      this.$stomp.subscribe(`/topic/room/${this.joinedRoomId}/publicChats`, (message) => {
+        const publicChatEvent = JSON.parse(message.body)
         console.log('**********Public chat event coming**********')
         console.log(publicChatEvent)
 
@@ -78,8 +78,8 @@ export default {
 
     },
     subscribeUsers() {
-      this.$stomp.subscribe(`/topic/room/${this.joinedRoomId}/users`, (payload) => {
-        const userEntranceEvent = JSON.parse(payload.body)
+      this.$stomp.subscribe(`/topic/room/${this.joinedRoomId}/users`, (message) => {
+        const userEntranceEvent = JSON.parse(message.body)
         console.log('**********User entrance event coming**********')
         console.log(userEntranceEvent)
 
@@ -119,8 +119,8 @@ export default {
       })
     },
     subscribeRoles() {
-      this.$stomp.subscribe(`/topic/room/${this.joinedRoomId}/roles`, (payload) => {
-        const roleEvent = JSON.parse(payload.body)
+      this.$stomp.subscribe(`/topic/room/${this.joinedRoomId}/roles`, (message) => {
+        const roleEvent = JSON.parse(message.body)
         console.log('**********Role event coming**********')
         console.log(roleEvent)
 
@@ -138,30 +138,10 @@ export default {
           })
         }
       })
-
     },
-    connectToSocket() {
-      return new Promise((resolve, reject) => {
-        const headers = {
-          token: this.$store.getters.apiToken
-        }
-        this.$stomp.connect(headers,
-          (frame) => {
-            resolve()
-          }, () => {
-            console.log('************ Disconnected -_- ***************')
-            reject()
-          })
-
-      })
-    },
-    joinToRoom() {
-      this.$stomp.send(`/app/room/${this.joinedRoomId}/joinRoom`, null, {})
-    }
   },
   async mounted() {
-    await this.connectToSocket()
-    this.joinToRoom()
+    this.$stomp.activate()
 
     await this.fetchRoles()
     const userRole = this.roomRoles.find(value => value.userId === this.userId) // store current user role

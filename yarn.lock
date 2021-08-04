@@ -1297,6 +1297,11 @@
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-1.0.0-next.15.tgz#6a9d143f7f4f49db2d782f9e1c8839a29b43ae23"
   integrity sha512-15spi3V28QdevleWBNXE4pIls3nFZmBbUGrW9IVPwiQczuSb9n76TCB4bsk8TSel+I1OkHEdPhu5QKMfY6rQHA==
 
+"@stomp/stompjs@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@stomp/stompjs/-/stompjs-6.1.0.tgz#b77ca240775a7a34289b2c09618e256be761d142"
+  integrity sha512-Bt+whL0V51rSKP35OkgM1yeVu/usunpz5l1VYuoWw8mGsDMNd3W3FpWa4/4eis6QfXO3uteNGfyE21XWn0pGAQ==
+
 "@types/html-minifier-terser@^5.0.0":
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/@types/html-minifier-terser/-/html-minifier-terser-5.1.2.tgz#693b316ad323ea97eed6b38ed1a3cc02b1672b57"
@@ -7928,11 +7933,6 @@ websocket-extensions@>=0.1.1:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
-
-webstomp-client@^1.2.6:
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/webstomp-client/-/webstomp-client-1.2.6.tgz#57e8a044bac0a08bfc3d0e54d43760c2aeefadab"
-  integrity sha512-9HajO6Ki2ViEGIusLZtjM2lcO2VaQUvtXhLQQ4Cm543RLjfTCEgI3sFaiXts3TvfZgrtY/vI/+qUkm2qWD/NVg==
 
 which-boxed-primitive@^1.0.2:
   version "1.0.2"

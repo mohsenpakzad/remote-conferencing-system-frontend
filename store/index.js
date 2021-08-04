@@ -15,7 +15,6 @@ export const state = () => ({
 
 export const getters = {
   getField,
-  apiToken: (state) => state.authorization,
   tokenHeader: (state) => ({
     Authorization: state.authorization
   }),
